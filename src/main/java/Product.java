@@ -1,5 +1,8 @@
 import java.math.BigDecimal;
-import java.util.UUID;
 
-public record Product(String id, String name, BigDecimal price, boolean onStock) {
+public record Product(String id, String name, BigDecimal price) {
+
+    public Product withPrice(BigDecimal price) {
+        return new Product(id, name, price);
+    }
 }

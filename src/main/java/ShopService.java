@@ -1,7 +1,7 @@
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 public class ShopService {
     private ProductRepo productRepo;
@@ -12,16 +12,26 @@ public class ShopService {
         this.orderRepo = orderRepo;
     }
 
-    public void placeOrder(List<String> productIds) {
-        List<Product> productsToOrder = new ArrayList<>();
-        for (String productId : productIds) {
+    public List<OrderItem> createOrderItemsList(Map<String, Integer> productsToOrder) {
+        List<OrderItem> orderItemsList = new ArrayList<>();
+        for (String productId : productsToOrder.keySet()) {
             Product product = productRepo.getProductById(productId);
             if (product == null) {
                 System.out.println("Product with id " + productId + " not found");
             }
-            productsToOrder.add(product);
+            OrderItem orderItem = new OrderItem(product, productsToOrder.get(productId));
+            orderItemsList.add(orderItem);
         }
-        orderRepo.addOrder(new Order(productsToOrder));
+        return orderItemsList;
+    }
+
+    public void placeOrder(Map<String, Integer> productsToOrder) {
+        orderRepo.addOrder(new Order(createOrderItemsList(productsToOrder)));
+    }
+
+    public void changeOrder(String orderId, Map<String, Integer> productsToOrder) {
+        Order order = orderRepo.getOrderById(orderId);
+        order.withOrderItems(createOrderItemsList(productsToOrder));
     }
 
     public ProductRepo getProductRepo() {
@@ -42,5 +52,10 @@ public class ShopService {
 
     public int countOrders() {
         return orderRepo.getOrdersCount();
+    }
+
+    public BigDecimal getTotalPrice(String orderId) {
+        Order order = orderRepo.getOrderById(orderId);
+        return order.getTotalPrice();
     }
 }

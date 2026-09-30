@@ -1,35 +1,41 @@
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductRepo {
-    private List<Product> products;
+    private Map<String, Product> products;
+    private Map<String, Integer> quantity;
 
-    public ProductRepo(List<Product> products) {
+    public ProductRepo(Map<String, Product> products, Map<String, Integer> quantity) {
         this.products = products;
+        this.quantity = quantity;
     }
 
-    public List<Product> getAllProducts() {
+    public Map<String, Product> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(Map<String, Product> products) {
         this.products = products;
     }
 
+    public Map<String, Integer> getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Map<String, Integer> quantity) {
+        this.quantity = quantity;
+    }
+
     public Product getProductById(String id) {
-        for (Product product : products) {
-            if (product.id().equals(id)) {
-                return product;
-            }
-        }
-        return null;
+        return products.get(id);
     }
 
     public void addProduct(Product product) {
-        this.products.add(product);
+        this.products.put(product.id(), product);
     }
 
     public void removeProduct(Product product) {
-        this.products.remove(product);
+        this.products.remove(product.id());
     }
 
 }
