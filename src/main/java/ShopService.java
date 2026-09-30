@@ -25,8 +25,10 @@ public class ShopService {
         return orderItemsList;
     }
 
-    public void placeOrder(Map<String, Integer> productsToOrder) {
-        orderRepo.addOrder(new Order(createOrderItemsList(productsToOrder)));
+    public String placeOrder(Map<String, Integer> productsToOrder) {
+        Order order = new Order(createOrderItemsList(productsToOrder));
+        orderRepo.addOrder(order);
+        return order.id();
     }
 
     public void changeOrder(String orderId, Map<String, Integer> productsToOrder) {
@@ -57,5 +59,14 @@ public class ShopService {
     public BigDecimal getTotalPrice(String orderId) {
         Order order = orderRepo.getOrderById(orderId);
         return order.getTotalPrice();
+    }
+
+    public void printAllProducts() {
+        System.out.println(productRepo.printProducts());
+    }
+
+    public void printOrder(String orderId) {
+        Order order = orderRepo.getOrderById(orderId);
+        System.out.println(order);
     }
 }

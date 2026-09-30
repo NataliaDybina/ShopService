@@ -38,4 +38,13 @@ public class ProductRepo {
         this.products.remove(product.id());
     }
 
+    public String printProducts() {
+        int i = 1;
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Product> entry : products.entrySet()) {
+            sb.append(i).append(". ").append(entry.getValue()).append("\n");
+            i++;
+        }
+        return sb.toString();
+    }
 }

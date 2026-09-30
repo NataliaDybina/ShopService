@@ -2,6 +2,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
     static void main(String[] args) {
@@ -50,5 +51,8 @@ public class Main {
         shopService.placeOrder(productsIdAndQuantityToOrder);
 
         System.out.println(shopService.getOrderRepo().getOrdersCount());
+
+        ShopConsole console = new ShopConsole(shopService);
+        console.start();
     }
 }
