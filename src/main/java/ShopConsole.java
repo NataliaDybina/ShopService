@@ -3,6 +3,12 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class ShopConsole {
+    private static final String RESET = "\u001B[0m";
+    private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String YELLOW = "\u001B[33m";
+    private static final String CYAN = "\u001B[36m";
+
     ShopService shopService;
     Scanner input = new Scanner(System.in);
 
@@ -11,10 +17,10 @@ public class ShopConsole {
     }
 
     public void start() {
-        System.out.println("Welcome to the Shopping System");
+        System.out.println(YELLOW + "Welcome to the Shopping System" + RESET);
         boolean running = true;
         do {
-            System.out.println("What would you like to do?");
+            System.out.println(CYAN + "What would you like to do?" + RESET);
             System.out.println("0. View the products catalog");
             System.out.println("1. Create Order");
             System.out.println("2. Delete Order");
@@ -40,14 +46,14 @@ public class ShopConsole {
                     running = false;
                     break;
                 default:
-                    System.out.println("Invalid choice");
+                    System.out.println(RED + "Invalid choice" + RESET);
                     break;
             }
         } while (running);
     }
 
     public void showProducts() {
-        System.out.println("We have today:");
+        System.out.println(CYAN + "We have today:" + RESET);
         shopService.printAllProducts();
     }
 
@@ -70,7 +76,7 @@ public class ShopConsole {
                     System.out.println("Enter the product id:");
                     productId = input.nextLine();
                     if (!shopService.checkIfProductExists(productId)) {
-                        System.out.println("There is no product with that ID");
+                        System.out.println(RED + "There is no product with that ID" + RESET);
                         break;
                     }
                     System.out.println("Enter quantity:");
@@ -83,7 +89,7 @@ public class ShopConsole {
                     break;
                 case "2":
                     if (productsIdAndQuantityToOrder.isEmpty() && orderId == null) {
-                        System.out.println("Invalid number");
+                        System.out.println(RED + "Invalid number" + RESET);
                         break;
                     }
                     System.out.println("Enter the product id:");
@@ -92,11 +98,11 @@ public class ShopConsole {
                     if (orderId != null) {
                         shopService.changeOrder(orderId, productsIdAndQuantityToOrder);
                     }
-                    System.out.println("Product " + productId + " has been deleted");
+                    System.out.println(GREEN + "Product " + productId + " has been deleted" + RESET);
                     break;
                 case "3":
                     if (productsIdAndQuantityToOrder.isEmpty()) {
-                        System.out.println("Invalid number");
+                        System.out.println(RED + "Invalid number" + RESET);
                         break;
                     }
                     System.out.println("Enter the product id:");
@@ -107,11 +113,11 @@ public class ShopConsole {
                     if (orderId != null) {
                         shopService.changeOrder(orderId, productsIdAndQuantityToOrder);
                     }
-                    System.out.println("Quantity has been replaced");
+                    System.out.println(GREEN + "Quantity has been replaced" + RESET);
                     break;
                 case "4":
                     if (productsIdAndQuantityToOrder.isEmpty()) {
-                        System.out.println("Invalid number");
+                        System.out.println(RED + "Invalid number" + RESET);
                         break;
                     }
                     if (orderId != null) {
@@ -119,8 +125,8 @@ public class ShopConsole {
                     } else {
                         orderId = shopService.placeOrder(productsIdAndQuantityToOrder);
                     }
-                    System.out.println("Order has been replaced");
-                    System.out.println("Your order:\n");
+                    System.out.println(GREEN + "Order has been replaced" + RESET);
+                    System.out.println("Your order:");
                     shopService.printOrder(orderId);
                     return;
                 case "5":
@@ -128,7 +134,7 @@ public class ShopConsole {
                     running = false;
                     break;
                 default:
-                    System.out.println("Invalid choice");
+                    System.out.println(RED + "Invalid choice" + RESET);
                     break;
             }
         } while (running);
