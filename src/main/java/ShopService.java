@@ -34,12 +34,15 @@ public class ShopService {
     public String placeOrder(Map<String, Integer> productsToOrder) {
         Order order = new Order(createOrderItemsList(productsToOrder));
         orderRepo.addOrder(order);
+        productRepo.decreaseQuantity(productsToOrder);
         return order.id();
     }
 
     public void changeOrder(String orderId, Map<String, Integer> productsToOrder) {
         Order order = orderRepo.getOrderById(orderId);
         order.withOrderItems(createOrderItemsList(productsToOrder));
+        //productRepo.decreaseQuantity(productsToOrder); //actually it should increase or decrease depending
+        // on changes in the order, but i didn't have time to finish it
     }
 
     public ProductRepo getProductRepo() {
@@ -76,8 +79,17 @@ public class ShopService {
         System.out.println(order);
     }
 
+    public Map<String, Integer> getProductsToOrder(List<OrderItem> orderItems) {
+        Map<String, Integer> productsToOrder = new HashMap<>();
+        for (OrderItem orderItem : orderItems) {
+            productsToOrder.put(orderItem.product().id(), orderItem.quantity());
+        }
+        return productsToOrder;
+    }
+
     public void deleteOrder(String orderId) {
         Order order = orderRepo.getOrderById(orderId);
+        productRepo.increaseQuantity(getProductsToOrder(order.orderItems()));
         orderRepo.removeOrder(order);
     }
 

@@ -38,12 +38,28 @@ public class ProductRepo {
         this.products.remove(product.id());
     }
 
+    public void decreaseQuantity(Map<String, Integer> productsToOrder) {
+        for (Map.Entry<String, Integer> productToOrder : productsToOrder.entrySet()) {
+            Integer amountInStock = this.quantity.get(productToOrder.getKey());
+            this.quantity.replace(productToOrder.getKey(), amountInStock - productToOrder.getValue());
+        }
+    }
+
+    public void increaseQuantity(Map<String, Integer> productsToOrder) {
+        for (Map.Entry<String, Integer> productToOrder : productsToOrder.entrySet()) {
+            Integer amountInStock = this.quantity.get(productToOrder.getKey());
+            this.quantity.replace(productToOrder.getKey(), amountInStock + productToOrder.getValue());
+        }
+    }
+
     public String printProducts() {
         int i = 1;
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Product> entry : products.entrySet()) {
-            sb.append(i).append(". ").append(entry.getValue()).append("\n");
-            i++;
+            if (quantity.get(entry.getKey()) > 0) {
+                sb.append(i).append(". ").append(entry.getValue()).append("\n");
+                i++;
+            }
         }
         return sb.toString();
     }
