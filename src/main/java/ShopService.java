@@ -13,6 +13,11 @@ public class ShopService {
         this.orderRepo = orderRepo;
     }
 
+    public ShopService(ProductRepo productRepo) {
+        this.productRepo = productRepo;
+        this.orderRepo = new OrderListRepo();
+    }
+
     public List<OrderItem> createOrderItemsList(Map<String, Integer> productsToOrder) {
         List<OrderItem> orderItemsList = new ArrayList<>();
         for (String productId : productsToOrder.keySet()) {
