@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,4 +70,28 @@ public class ShopService {
         Order order = orderRepo.getOrderById(orderId);
         System.out.println(order);
     }
+
+    public void deleteOrder(String orderId) {
+        Order order = orderRepo.getOrderById(orderId);
+        orderRepo.removeOrder(order);
+    }
+
+    public Map<String, Integer> getProductsIdAndQuantityToOrder(String orderId) {
+        Map<String, Integer> productsIdAndQuantityToOrder = new HashMap<>();
+        Order order = orderRepo.getOrderById(orderId);
+        order.orderItems().forEach(orderItem ->
+                productsIdAndQuantityToOrder.put(orderItem.product().id(), orderItem.quantity()));
+        return productsIdAndQuantityToOrder;
+    }
+
+    public boolean checkIfProductExists(String productId) {
+        Product product = productRepo.getProductById(productId);
+        return product != null;
+    }
+
+    public boolean checkIfOrderExists(String orderId) {
+        Order order = orderRepo.getOrderById(orderId);
+        return order != null;
+    }
+
 }

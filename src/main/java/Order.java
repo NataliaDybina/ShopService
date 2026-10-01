@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,5 +22,11 @@ public record Order(String id, LocalDateTime orderDate, List<OrderItem> orderIte
             totalPrice = totalPrice.add(totalPriceForProduct);
         }
         return totalPrice;
+    }
+
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return "Order number: " + id + ", date: " + orderDate.format(formatter)
+                + ", total: " + getTotalPrice() + "$\n " + orderItems;
     }
 }
