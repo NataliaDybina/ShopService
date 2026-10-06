@@ -1,9 +1,15 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProductRepo {
     private Map<String, Product> products;
     private Map<String, Integer> quantity;
+
+    public ProductRepo() {
+        products = new HashMap<>();
+        quantity = new HashMap<>();
+    }
 
     public ProductRepo(Map<String, Product> products, Map<String, Integer> quantity) {
         this.products = products;
@@ -26,8 +32,8 @@ public class ProductRepo {
         this.quantity = quantity;
     }
 
-    public Product getProductById(String id) {
-        return products.get(id);
+    public Optional<Product> getProductById(String id) {
+        return Optional.ofNullable(products.get(id));
     }
 
     public void addProduct(Product product) {
