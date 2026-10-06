@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OrderMapRepo implements OrderRepo {
@@ -8,8 +9,8 @@ public class OrderMapRepo implements OrderRepo {
         orders = new HashMap<>();
     }
 
-    public Map<String, Order> getAllOrders() {
-        return orders;
+    public List<Order> getOrders() {
+        return orders.values().stream().toList();
     }
 
     public void setOrders(Map<String, Order> orders) {

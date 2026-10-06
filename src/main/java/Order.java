@@ -4,15 +4,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
-public record Order(String id, LocalDateTime orderDate, List<OrderItem> orderItems) {
+public record Order(String id, LocalDateTime orderDate, OrderStatus status, List<OrderItem> orderItems) {
     public Order(List<OrderItem> productsWithQuantity) {
         String id = UUID.randomUUID().toString();
         LocalDateTime orderDate = LocalDateTime.now();
-        this(id, orderDate, productsWithQuantity);
+        this(id, orderDate, OrderStatus.PROCESSING, productsWithQuantity);
     }
 
     public Order withOrderItems(List<OrderItem> orderItems) {
-        return new Order(id, orderDate, orderItems);
+        return new Order(id, orderDate, status, orderItems);
     }
 
     public BigDecimal getTotalPrice() {
