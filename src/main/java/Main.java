@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Main {
     static void main(String[] args) {
-   /*     Product product1 = new Product("m1", "Milk", BigDecimal.valueOf(2.30));
+       /* Product product1 = new Product("m1", "Milk", BigDecimal.valueOf(2.30));
         Product product2 = new Product("f1", "Banana", BigDecimal.valueOf(4.50));
         Product product3 = new Product("b1", "Bread", BigDecimal.valueOf(0.80));
         Product product4 = new Product("m2", "Cheese", BigDecimal.valueOf(1.50));
@@ -21,9 +21,8 @@ public class Main {
         productQuantity.put("m2", 2);
         productQuantity.put("b1", 1);
         productQuantity.put("f1", 2);
-        ProductRepo productRepo = new ProductRepo(products, productQuantity);*/
+        ProductRepo productRepo = new ProductRepo(products, productQuantity);
 
-/*
         OrderItem order1Item1 = new OrderItem(product1, 1);
         OrderItem order1Item2 = new OrderItem(product2, 2);
         OrderItem order1Item3 = new OrderItem(product3, 3);
@@ -37,8 +36,6 @@ public class Main {
         OrderRepo orderRepo = new OrderListRepo();
         orderRepo.addOrder(order1);
         orderRepo.addOrder(order2);
-*/
-/*
         OrderRepo orderRepo2 = new OrderMapRepo();
         orderRepo2.addOrder(order1);
         orderRepo2.addOrder(order2);
@@ -52,7 +49,8 @@ public class Main {
         productsIdAndQuantityToOrder.put("b1", 1);
         shopService.placeOrder(productsIdAndQuantityToOrder);
 
-        System.out.println(shopService.getOrderRepo().getOrdersCount());*/
+        System.out.println(shopService.getOrderRepo().getOrdersCount());
+        System.out.println(shopService.getOrdersByOrderStatus(OrderStatus.PROCESSING));*/
 
         ProductRepo productRepo = CsvProductLoader.loadProductsFromCsv("products.csv");
         ShopService shopService = new ShopService(productRepo);

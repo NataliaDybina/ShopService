@@ -111,4 +111,8 @@ public class ShopService {
         return order != null;
     }
 
+    public List<Order> getOrdersByOrderStatus(OrderStatus orderStatus) {
+        return orderRepo.getOrders().stream()
+                .filter(order -> order.status().equals(orderStatus)).toList();
+    }
 }
