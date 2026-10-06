@@ -1,8 +1,5 @@
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ShopService {
     private ProductRepo productRepo;
@@ -18,13 +15,13 @@ public class ShopService {
         this.orderRepo = new OrderListRepo();
     }
 
+    public ShopService() {
+    }
+
     public List<OrderItem> createOrderItemsList(Map<String, Integer> productsToOrder) {
         List<OrderItem> orderItemsList = new ArrayList<>();
         for (String productId : productsToOrder.keySet()) {
-            Product product = productRepo.getProductById(productId);
-            if (product == null) {
-                System.out.println("Product with id " + productId + " not found");
-            }
+            Product product = getProductById(productId);
             OrderItem orderItem = new OrderItem(product, productsToOrder.get(productId));
             orderItemsList.add(orderItem);
         }
@@ -79,6 +76,10 @@ public class ShopService {
         System.out.println(order);
     }
 
+    public Product getProductById(String productId) {
+        return productRepo.getProductById(productId).orElseThrow(() -> new IllegalArgumentException("Product with id " + productId + " not found"));
+    }
+
     public Map<String, Integer> getProductsToOrder(List<OrderItem> orderItems) {
         Map<String, Integer> productsToOrder = new HashMap<>();
         for (OrderItem orderItem : orderItems) {
@@ -102,8 +103,7 @@ public class ShopService {
     }
 
     public boolean checkIfProductExists(String productId) {
-        Product product = productRepo.getProductById(productId);
-        return product != null;
+        return productRepo.getProductById(productId).isPresent();
     }
 
     public boolean checkIfOrderExists(String orderId) {
