@@ -1,15 +1,17 @@
 import java.util.List;
 
 public interface OrderRepo {
-    public void addOrder(Order order);
+    void addOrder(Order order);
 
-    public void removeOrder(Order order);
+    void removeOrder(Order order);
 
-    public Order getOrderById(String id);
+    void updateOrder(Order order);
 
-    public int getOrdersCount();
+    Order getOrderById(String id);
 
-    public List<Order> getOrders();
+    int getOrdersCount();
 
-    public String toString();
+    List<Order> getOrders();
+
+    String toString();
 }

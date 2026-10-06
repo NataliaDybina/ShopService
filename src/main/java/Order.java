@@ -1,18 +1,19 @@
+import lombok.With;
+
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
-public record Order(String id, LocalDateTime orderDate, OrderStatus status, List<OrderItem> orderItems) {
+@With
+public record Order(String id, Instant date, OrderStatus status, List<OrderItem> orderItems) {
     public Order(List<OrderItem> productsWithQuantity) {
         String id = UUID.randomUUID().toString();
-        LocalDateTime orderDate = LocalDateTime.now();
+        Instant orderDate = Instant.now();
         this(id, orderDate, OrderStatus.PROCESSING, productsWithQuantity);
-    }
-
-    public Order withOrderItems(List<OrderItem> orderItems) {
-        return new Order(id, orderDate, status, orderItems);
     }
 
     public BigDecimal getTotalPrice() {
@@ -26,7 +27,9 @@ public record Order(String id, LocalDateTime orderDate, OrderStatus status, List
 
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        LocalDateTime orderDate = LocalDateTime.ofInstant(date(), ZoneId.systemDefault());
         return "Order number: " + id + ", date: " + orderDate.format(formatter)
+                + ", status: " + status
                 + ", total: " + getTotalPrice() + "$\n " + orderItems;
     }
 }

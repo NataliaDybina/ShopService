@@ -17,7 +17,7 @@ class ProductRepoTest {
     @Test
     void getProductById_shouldReturnProduct() {
         Product product = new Product("m1", "Milk", BigDecimal.valueOf(1.29));
-        productRepo.addProduct(product);
+        productRepo.addProduct(product, 2);
 
         Optional<Product> foundProduct = productRepo.getProductById("m1");
         assertTrue(foundProduct.isPresent(), "Product not found");

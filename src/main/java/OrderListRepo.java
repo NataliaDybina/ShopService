@@ -1,20 +1,11 @@
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class OrderListRepo implements OrderRepo {
-    private List<Order> orders;
-
-    public OrderListRepo() {
-        this.orders = new ArrayList<>();
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
+    private final List<Order> orders = new ArrayList<>();
 
     public void addOrder(Order order) {
         this.orders.add(order);
@@ -22,6 +13,11 @@ public class OrderListRepo implements OrderRepo {
 
     public void removeOrder(Order order) {
         this.orders.remove(order);
+    }
+
+    public void updateOrder(Order order) {
+        Order oldOrder = getOrderById(order.id());
+        orders.set(this.orders.indexOf(oldOrder), order);
     }
 
     public Order getOrderById(String id) {
