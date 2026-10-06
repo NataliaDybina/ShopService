@@ -1,6 +1,10 @@
+import lombok.Data;
+
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 
+@Data
 public class ShopService {
     private ProductRepo productRepo;
     private OrderRepo orderRepo;
@@ -13,9 +17,6 @@ public class ShopService {
     public ShopService(ProductRepo productRepo) {
         this.productRepo = productRepo;
         this.orderRepo = new OrderListRepo();
-    }
-
-    public ShopService() {
     }
 
     public List<OrderItem> createOrderItemsList(Map<String, Integer> productsToOrder) {
@@ -35,27 +36,13 @@ public class ShopService {
         return order.id();
     }
 
-    public void changeOrder(String orderId, Map<String, Integer> productsToOrder) {
+    public Order changeOrder(String orderId, Map<String, Integer> productsToOrder) {
         Order order = orderRepo.getOrderById(orderId);
-        order.withOrderItems(createOrderItemsList(productsToOrder));
+        Order updatedOrder = order.withOrderItems(createOrderItemsList(productsToOrder)).withDate(Instant.now());
+        orderRepo.updateOrder(updatedOrder);
         //productRepo.decreaseQuantity(productsToOrder); //actually it should increase or decrease depending
-        // on changes in the order, but i didn't have time to finish it
-    }
-
-    public ProductRepo getProductRepo() {
-        return productRepo;
-    }
-
-    public void setProductRepo(ProductRepo productRepo) {
-        this.productRepo = productRepo;
-    }
-
-    public OrderRepo getOrderRepo() {
-        return orderRepo;
-    }
-
-    public void setOrderRepo(OrderRepo orderRepo) {
-        this.orderRepo = orderRepo;
+        // on changes in the order, but I didn't have time to finish it
+        return updatedOrder;
     }
 
     public int countOrders() {
@@ -114,5 +101,10 @@ public class ShopService {
     public List<Order> getOrdersByOrderStatus(OrderStatus orderStatus) {
         return orderRepo.getOrders().stream()
                 .filter(order -> order.status().equals(orderStatus)).toList();
+    }
+
+    public Order updateOrderStatus(String orderId, OrderStatus orderStatus) {
+        return orderRepo.getOrderById(orderId).withStatus(orderStatus);
+
     }
 }

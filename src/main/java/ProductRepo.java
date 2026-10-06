@@ -1,43 +1,37 @@
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Getter
 public class ProductRepo {
-    private Map<String, Product> products;
-    private Map<String, Integer> quantity;
+    private final Map<String, Product> products;
+    private final Map<String, Integer> quantities;
 
     public ProductRepo() {
         products = new HashMap<>();
-        quantity = new HashMap<>();
+        quantities = new HashMap<>();
     }
 
     public ProductRepo(Map<String, Product> products, Map<String, Integer> quantity) {
         this.products = products;
-        this.quantity = quantity;
-    }
 
-    public Map<String, Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Map<String, Product> products) {
-        this.products = products;
-    }
-
-    public Map<String, Integer> getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Map<String, Integer> quantity) {
-        this.quantity = quantity;
+        this.quantities = quantity;
     }
 
     public Optional<Product> getProductById(String id) {
         return Optional.ofNullable(products.get(id));
     }
 
-    public void addProduct(Product product) {
+    public void addProduct(Product product, int quantity) {
+        if (products.containsKey(product.id())) {
+            this.quantities.put(product.id(), quantities.get(product.id()) + quantity);
+        } else {
+            this.quantities.put(product.id(), quantity);
+        }
         this.products.put(product.id(), product);
+
     }
 
     public void removeProduct(Product product) {
@@ -46,15 +40,15 @@ public class ProductRepo {
 
     public void decreaseQuantity(Map<String, Integer> productsToOrder) {
         for (Map.Entry<String, Integer> productToOrder : productsToOrder.entrySet()) {
-            Integer amountInStock = this.quantity.get(productToOrder.getKey());
-            this.quantity.replace(productToOrder.getKey(), amountInStock - productToOrder.getValue());
+            Integer amountInStock = this.quantities.get(productToOrder.getKey());
+            this.quantities.replace(productToOrder.getKey(), amountInStock - productToOrder.getValue());
         }
     }
 
     public void increaseQuantity(Map<String, Integer> productsToOrder) {
         for (Map.Entry<String, Integer> productToOrder : productsToOrder.entrySet()) {
-            Integer amountInStock = this.quantity.get(productToOrder.getKey());
-            this.quantity.replace(productToOrder.getKey(), amountInStock + productToOrder.getValue());
+            Integer amountInStock = this.quantities.get(productToOrder.getKey());
+            this.quantities.replace(productToOrder.getKey(), amountInStock + productToOrder.getValue());
         }
     }
 
@@ -62,7 +56,7 @@ public class ProductRepo {
         int i = 1;
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Product> entry : products.entrySet()) {
-            if (quantity.get(entry.getKey()) > 0) {
+            if (quantities.get(entry.getKey()) > 0) {
                 sb.append(i).append(". ").append(entry.getValue()).append("\n");
                 i++;
             }
