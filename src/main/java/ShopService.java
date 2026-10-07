@@ -1,3 +1,4 @@
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -5,19 +6,11 @@ import java.time.Instant;
 import java.util.*;
 
 @Data
+@AllArgsConstructor
 public class ShopService {
     private ProductRepo productRepo;
     private OrderRepo orderRepo;
-
-    public ShopService(ProductRepo productRepo, OrderRepo orderRepo) {
-        this.productRepo = productRepo;
-        this.orderRepo = orderRepo;
-    }
-
-    public ShopService(ProductRepo productRepo) {
-        this.productRepo = productRepo;
-        this.orderRepo = new OrderListRepo();
-    }
+    private IdService idService;
 
     public List<OrderItem> createOrderItemsList(Map<String, Integer> productsToOrder) {
         List<OrderItem> orderItemsList = new ArrayList<>();
@@ -30,7 +23,8 @@ public class ShopService {
     }
 
     public String placeOrder(Map<String, Integer> productsToOrder) {
-        Order order = new Order(createOrderItemsList(productsToOrder));
+        String orderId = idService.generateId();
+        Order order = new Order(orderId, createOrderItemsList(productsToOrder));
         orderRepo.addOrder(order);
         productRepo.decreaseQuantity(productsToOrder);
         return order.id();

@@ -11,12 +11,33 @@ class ShopServiceTest {
     private ProductRepo productRepo;
     private ShopService shopService;
     private OrderRepo orderRepo;
+    private IdService idService;
 
     @BeforeEach
     void setUp() {
         productRepo = new ProductRepo();
         orderRepo = new OrderListRepo();
-        shopService = new ShopService(productRepo, orderRepo);
+        idService = new UUIDService();
+        shopService = new ShopService(productRepo, orderRepo, idService);
+    }
+
+    @Test
+    void placeOrder() {
+        Product product1 = new Product("m1", "Milk", BigDecimal.valueOf(2.30));
+        Product product2 = new Product("f1", "Banana", BigDecimal.valueOf(4.50));
+        Product product3 = new Product("m2", "Butter", BigDecimal.valueOf(3.40));
+        productRepo.addProduct(product1, 1);
+        productRepo.addProduct(product2, 1);
+        productRepo.addProduct(product3, 1);
+
+        Map<String, Integer> productsToOrder = new HashMap<>();
+        productsToOrder.put("m1", 1);
+        productsToOrder.put("f1", 2);
+
+        IdService testIdService = () -> "fixed-test-id-123";
+        shopService = new ShopService(productRepo, orderRepo, testIdService);
+        String orderId = shopService.placeOrder(productsToOrder);
+        assertEquals("fixed-test-id-123", orderId);
     }
 
     @Test
@@ -70,8 +91,8 @@ class ShopServiceTest {
         productRepo.addProduct(product2, 1);
         OrderItem order1Item1 = new OrderItem(product1, 1);
         OrderItem order1Item2 = new OrderItem(product2, 2);
-        Order order1 = new Order(Arrays.asList(order1Item1, order1Item2));
-        Order order2 = new Order(Arrays.asList(order1Item1, order1Item2));
+        Order order1 = new Order(idService.generateId(), Arrays.asList(order1Item1, order1Item2));
+        Order order2 = new Order(idService.generateId(), Arrays.asList(order1Item1, order1Item2));
         orderRepo.addOrder(order1);
         orderRepo.addOrder(order2);
         order2 = shopService.updateOrderStatus(order2.id(), OrderStatus.COMPLETED);
@@ -87,8 +108,8 @@ class ShopServiceTest {
         productRepo.addProduct(product2, 1);
         OrderItem order1Item1 = new OrderItem(product1, 1);
         OrderItem order1Item2 = new OrderItem(product2, 2);
-        Order order1 = new Order(Arrays.asList(order1Item1, order1Item2));
-        Order order2 = new Order(Arrays.asList(order1Item1, order1Item2));
+        Order order1 = new Order(idService.generateId(), Arrays.asList(order1Item1, order1Item2));
+        Order order2 = new Order(idService.generateId(), Arrays.asList(order1Item1, order1Item2));
         orderRepo.addOrder(order1);
         orderRepo.addOrder(order2);
         assertEquals(List.of(), shopService.getOrdersByOrderStatus(OrderStatus.COMPLETED));
@@ -102,7 +123,7 @@ class ShopServiceTest {
         productRepo.addProduct(product2, 1);
         OrderItem order1Item1 = new OrderItem(product1, 1);
         OrderItem order1Item2 = new OrderItem(product2, 2);
-        Order order = new Order(Arrays.asList(order1Item1, order1Item2));
+        Order order = new Order(idService.generateId(), Arrays.asList(order1Item1, order1Item2));
         orderRepo.addOrder(order);
         Order updatedOrder = shopService.updateOrderStatus(order.id(), OrderStatus.COMPLETED);
         assertEquals(OrderStatus.COMPLETED, updatedOrder.status());

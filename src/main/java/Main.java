@@ -2,7 +2,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public class Main {
     static void main(String[] args) {
@@ -53,7 +52,9 @@ public class Main {
         System.out.println(shopService.getOrdersByOrderStatus(OrderStatus.PROCESSING));*/
 
         ProductRepo productRepo = CsvProductLoader.loadProductsFromCsv("products.csv");
-        ShopService shopService = new ShopService(productRepo);
+        OrderRepo orderRepo = new OrderListRepo();
+        IdService idService = new UUIDService();
+        ShopService shopService = new ShopService(productRepo, orderRepo, idService);
         ShopConsole console = new ShopConsole(shopService);
         console.start();
     }

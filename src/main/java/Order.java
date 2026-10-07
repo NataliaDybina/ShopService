@@ -6,12 +6,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 
 @With
 public record Order(String id, Instant date, OrderStatus status, List<OrderItem> orderItems) {
-    public Order(List<OrderItem> productsWithQuantity) {
-        String id = UUID.randomUUID().toString();
+    public Order(String id, List<OrderItem> productsWithQuantity) {
         Instant orderDate = Instant.now();
         this(id, orderDate, OrderStatus.PROCESSING, productsWithQuantity);
     }
