@@ -4,6 +4,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -97,8 +100,14 @@ public class ShopService {
                 .filter(order -> order.status().equals(orderStatus)).toList();
     }
 
-    public Order updateOrderStatus(String orderId, OrderStatus orderStatus) {
-        return orderRepo.getOrderById(orderId).withStatus(orderStatus);
+    public void updateOrderStatus(String orderId, OrderStatus orderStatus) {
+        Order updatedOrder = orderRepo.getOrderById(orderId).withStatus(orderStatus);
+        orderRepo.updateOrder(updatedOrder);
+    }
 
+    public Map<OrderStatus, Order> getOldestOrderPerStatus() {
+        return orderRepo.getOrders().stream()
+                .collect(Collectors.toMap(Order::status, Function.identity(), BinaryOperator.minBy(Comparator.comparing(Order::date)))
+                );
     }
 }

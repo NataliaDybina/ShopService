@@ -95,8 +95,7 @@ class ShopServiceTest {
         Order order2 = new Order(idService.generateId(), Arrays.asList(order1Item1, order1Item2));
         orderRepo.addOrder(order1);
         orderRepo.addOrder(order2);
-        order2 = shopService.updateOrderStatus(order2.id(), OrderStatus.COMPLETED);
-        orderRepo.updateOrder(order2);
+        shopService.updateOrderStatus(order2.id(), OrderStatus.COMPLETED);
         assertEquals(List.of(order1), shopService.getOrdersByOrderStatus(OrderStatus.PROCESSING));
     }
 
@@ -125,7 +124,43 @@ class ShopServiceTest {
         OrderItem order1Item2 = new OrderItem(product2, 2);
         Order order = new Order(idService.generateId(), Arrays.asList(order1Item1, order1Item2));
         orderRepo.addOrder(order);
-        Order updatedOrder = shopService.updateOrderStatus(order.id(), OrderStatus.COMPLETED);
-        assertEquals(OrderStatus.COMPLETED, updatedOrder.status());
+        shopService.updateOrderStatus(order.id(), OrderStatus.COMPLETED);
+        assertEquals(OrderStatus.COMPLETED, orderRepo.getOrderById(order.id()).status());
+    }
+
+    @Test
+    void getOldestOrderPerStatus_shouldReturnOrders() {
+        Product product1 = new Product("m1", "Milk", BigDecimal.valueOf(2.30));
+        Product product2 = new Product("f1", "Banana", BigDecimal.valueOf(4.50));
+        Product product3 = new Product("m2", "Butter", BigDecimal.valueOf(3.40));
+        productRepo.addProduct(product1, 1);
+        productRepo.addProduct(product2, 1);
+        productRepo.addProduct(product3, 1);
+
+        Map<String, Integer> productsToOrder1 = new HashMap<>();
+        productsToOrder1.put("m1", 1);
+        productsToOrder1.put("f1", 2);
+        String orderId1 = shopService.placeOrder(productsToOrder1);
+        shopService.updateOrderStatus(orderId1, OrderStatus.COMPLETED);
+
+        Map<String, Integer> productsToOrder2 = new HashMap<>();
+        productsToOrder2.put("m2", 1);
+        productsToOrder2.put("f1", 1);
+        String orderId2 = shopService.placeOrder(productsToOrder2);
+        shopService.updateOrderStatus(orderId2, OrderStatus.COMPLETED);
+
+        Map<String, Integer> productsToOrder3 = new HashMap<>();
+        productsToOrder3.put("m1", 1);
+        productsToOrder3.put("f1", 2);
+        String orderId3 = shopService.placeOrder(productsToOrder3);
+        shopService.updateOrderStatus(orderId3, OrderStatus.COMPLETED);
+
+        Map<String, Integer> productsToOrder4 = new HashMap<>();
+        productsToOrder4.put("m1", 1);
+        productsToOrder4.put("f1", 2);
+        String orderId4 = shopService.placeOrder(productsToOrder4);
+
+        assertEquals(2, shopService.getOldestOrderPerStatus().size());
+        assertEquals(Set.of(orderId1, orderId4), Set.copyOf(shopService.getOldestOrderPerStatus().values().stream().map(Order::id).toList()));
     }
 }
